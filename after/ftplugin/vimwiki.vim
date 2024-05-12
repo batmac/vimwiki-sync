@@ -35,7 +35,7 @@ augroup vimwiki
   if vimwiki#vars#get_wikilocal('is_temporary_wiki') == 1
     finish
   endif
-  
+
 
   " execute vim function. because vimwiki can be started from any directory,
   " we must use pushd and popd commands to execute git commands in wiki root
@@ -43,14 +43,14 @@ augroup vimwiki
   " command. the downside is that the command output is not displayed at all.
   " One idea: what about running git asynchronously?
   function! s:git_action(action)
-    execute ':silent !' . a:action 
+    execute ':silent !' . a:action
     " prevent screen artifacts
     redraw!
   endfunction
 
   function! My_exit_cb(channel,msg )
     echom "[vimiwiki sync] Sync done"
-    execute 'checktime' 
+    execute 'checktime'
     redraw!
   endfunction
 
@@ -113,18 +113,18 @@ augroup vimwiki
 
   function! s:commit_changes()
     " commit only when there are no issues
-    if <sid>no_conflicts()  
+    if <sid>no_conflicts()
       call <sid>git_action("git -C " . g:zettel_dir . " add . ; git -C " . g:zettel_dir . " commit -m \"" . strftime(g:vimwiki_sync_commit_message) . "\"")
     endif
   endfunction
 
   " sync changes at the start
-  au! VimEnter * call <sid>pull_changes()
-  au! BufRead * call <sid>pull_changes()
-  au! BufEnter * call <sid>pull_changes()
+  " au! VimEnter * call <sid>pull_changes()
+  " au! BufRead * call <sid>pull_changes()
+  " au! BufEnter * call <sid>pull_changes()
   " auto commit changes on each file change
   au! BufWritePost * call <sid>commit_changes()
   " push changes only on at the end
-  au! VimLeave * call <sid>git_action("git -C " . g:zettel_dir . " push origin " . g:vimwiki_sync_branch)
+  " au! VimLeave * call <sid>git_action("git -C " . g:zettel_dir . " push origin " . g:vimwiki_sync_branch)
   " au! VimLeave * call <sid>push_changes()
 augroup END
